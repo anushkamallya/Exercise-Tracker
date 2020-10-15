@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-//Apply constraints to username field - min 3 chars, trim white space, unique
 const userSchema = new Schema({
   username: {
     type: String,

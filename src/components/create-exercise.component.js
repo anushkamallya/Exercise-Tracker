@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
 
 export default class CreateExercise extends Component {
   //Call super when declaring constructor of a subclass
@@ -26,10 +27,18 @@ export default class CreateExercise extends Component {
 
   //This method is a part of the React life cycle and is invoked immediately after a component is mounted
   componentDidMount() {
-    this.setState({ 
-      users: ['test user'],
-      username: 'test user'
-    });
+    axios.get('http://localhost:5000/users/')
+    .then(response => {
+      if (response.data.length > 0) {
+        this.setState({ 
+          users: response.data.map(user => user.username),
+          username: response.data[0].username
+        });
+      }
+  })
+  .catch((error) => {
+    console.log(error);
+  })
   }
 
   //Add methods which can be used to update the state properties
@@ -69,10 +78,14 @@ export default class CreateExercise extends Component {
     };
   
     console.log(exercise);
+    axios.post('http://localhost:5000/exercises/add', exercise)
+     .then(res => console.log(res.data));
+    
     
     window.location = '/';
   }
   
+
   //The form code is placed in render because that is what needs to be displayed
   render() {
     return (
@@ -107,8 +120,7 @@ export default class CreateExercise extends Component {
           </div>
           <div className="form-group">
             <label>Duration (in minutes): </label>
-            <input 
-                type="text" 
+            <input type="text" 
                 className="form-control"
                 value={this.state.duration}
                 onChange={this.onChangeDuration}
